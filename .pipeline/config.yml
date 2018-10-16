@@ -1,0 +1,64 @@
+general:
+  artifactType: 'mta'
+  buildTool: 'mta'
+  cfOrg: ''
+  gitSshKeyCredentialsId: ''
+  ppmsID: ''
+  xMakeBuildQuality: Milestone
+  xMakeNovaCredentialsId: xmakeNova
+  xMakeDevCredentialsId: xmakeDev
+  whitesourceProductName: ''
+  whitesourceProjectNames:
+    - ''
+
+  #Pipeline execution:
+  runOpaTests: false
+  runFunctionalAcceptanceTests: false
+  runPerformanceJMeterTests: false
+  runPerformanceSUT: false
+  runPerformanceUnitTests: false
+
+steps:
+  deployToCloudFoundry:
+    deployTool: 'mtaDeployPlugin'
+  executeCheckmarxScan:
+    checkmarxGroupId: 'f8bb43bd-9a38-4e6a-a932-6a8159817e41'
+  executeFortifyScan:
+    environment: docker
+    scanType: mta
+  executeOnePageAcceptanceTests:
+    buildTool: npm
+  executeOpenSourceDependencyScan:
+    scanType: mta
+    nsp: false
+    sourceClear: true
+    vulas: true
+  executePPMSWhitesourceComplianceCheck:
+    ppmsCredentialsId: ''
+  executeWhitesourceScan:
+    scanType: 'mta'
+  sendNotificationMail:
+    notificationRecipients: ''
+  writeInflux:
+    influxServer: jenkins
+stages:
+  Integration:
+    extensionIntegrationTestScript: ''
+  Acceptance:
+    cfManifest: ''
+    cfSpace: ''
+    testServerUrl: ''
+  Performance:
+    cfManifest: ''
+    cfSpace: ''
+    mtaExtensionDescriptor: 'assembly/performance.mtaext'
+    testServerUrl: ''
+    testTool: 'supa'
+  Release:
+    cfApiEndpoint: https://api.cf.eu10.hana.ondemand.com
+    cfManifest: ''
+    cfOrg: ''
+    cfSpace: ''
+    deployType: 'blue-green'
+    mtaDeployParameters: '-f --no-confirm'
+    testServerUrl: ''
