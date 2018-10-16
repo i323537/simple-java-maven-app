@@ -14,7 +14,9 @@ try{
                         sh 'pwd'                 
                        // }
                        measureDuration(script: this, measurementName: 'fortify_duration') {
+                             stashFiles(script: this){
                        executeFortifyScan script: this, fortifyCredentialsId:'FortifyCredentials',scanType:'maven', buildDescriptorFile: './pom.xml'
+                       }
                        }
                 }
             }
