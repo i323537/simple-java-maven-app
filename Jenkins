@@ -1,0 +1,30 @@
+#!/usr/bin/env groovy
+@Library(['piper-lib', 'piper-lib-os']) _
+
+try{      
+      stage('Fortify') {
+            lock(resource: "${env.JOB_NAME}/30", inversePrecedence: true) {
+                milestone 30
+                node {
+                      deleteDir()
+                      //stashFiles (script: this, stashIncludes: [buildDescriptor: 'pom.xml']) {
+                        checkout scm
+                        setupPipelineEnvironment script: this, storeGithubStatistics: false
+                        sh 'ls -la'
+                        sh 'pwd'                 
+                       // }
+                       measureDuration(script: this, measurementName: 'fortify_duration') {
+                       executeFortifyScan script: this, fortifyCredentialsId:'FortifyCredentials',scanType:'maven', buildDescriptorFile: './pom.xml'
+                       }
+                }
+            }
+        }
+} catch (Throwable err) { // catch all exceptions
+    globalPipelineEnvironment.addError(this, err)
+    throw err
+} finally {
+    node{
+        writeInflux script: this
+        sendNotificationMail script: this
+    }
+}
